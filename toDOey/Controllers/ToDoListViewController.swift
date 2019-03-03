@@ -10,9 +10,9 @@ import UIKit
 
 class ToDoListViewController: UITableViewController {
     
-    var itemArray = ["Find Mike", "Buy Eggs", "Destroy Demogorgon"]
+    var itemArray : [Item] = [Item]()
     
-    let defaults = UserDefaults.standard
+    let defaults = UserDefaults.standard                //UserDefaults constant
     
     
     
@@ -23,9 +23,14 @@ class ToDoListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
+
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
-        cell.textLabel?.text = itemArray[indexPath.row]
+        cell.textLabel?.text = itemArray[indexPath.row].title
+        
+        let tempItem = itemArray[indexPath.row]
+        cell.accessoryType = tempItem.done == true ? .checkmark : .none     // Ternary Operator
+        
+        
         return cell
     }
     
@@ -34,13 +39,9 @@ class ToDoListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        } else {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
+        itemArray[indexPath.row].done = !itemArray[indexPath.row].done      // Change done current value to opisite value using !
         
-        print(itemArray[indexPath.row])
+        tableView.reloadData()
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
@@ -52,12 +53,17 @@ class ToDoListViewController: UITableViewController {
         
         let alert = UIAlertController(title: "Add New ToDOey Item", message: "Alert Message", preferredStyle: .alert)
         let action = UIAlertAction(title: "Add Item", style: .default) { (myAction) in
+            
             //what will happen once the user clicks the add Item button on our UIAlert
             
-            self.itemArray.append(textField.text!)                      //add item to Array
-            self.defaults.set(self.itemArray, forKey: "ToDoListArray")  //put Array to useer defaults
+            let newItem = Item()
+            newItem.title = textField.text!
+            newItem.done = false
             
-            print(self.itemArray)
+            self.itemArray.append(newItem)                                    // add item to Array
+            
+            self.defaults.set(self.itemArray, forKey: "ToDoListArray")        // Save Array to UserDefaults
+            
             self.tableView.reloadData()
         }
         
@@ -71,13 +77,23 @@ class ToDoListViewController: UITableViewController {
         
     }
     
+    
+    
+    
+    
+    
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.separatorStyle = .singleLine
         
-        if let items = defaults.array(forKey: "ToDoListArray") as? [String] {      //retrive user defaults to Array on startup
+        let newItem = Item()
+        newItem.title = "Find Mike"
+        itemArray.append(newItem)
+        
+        if let items = defaults.array(forKey: "ToDoListArray") as? [Item] {      //retrive user defaults to Array on startup
             itemArray = items
         }
         // Do any additional setup after loading the view, typically from a nib.

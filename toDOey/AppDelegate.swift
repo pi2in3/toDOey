@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
-        print("application Did Enter Background")
+        //print("application Did Enter Background")
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
@@ -38,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        print("Application Will Terminate !")
+        //print("Application Will Terminate !")
     }
 
 
