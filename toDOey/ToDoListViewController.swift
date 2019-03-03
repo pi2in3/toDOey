@@ -10,7 +10,9 @@ import UIKit
 
 class ToDoListViewController: UITableViewController {
     
-    let itemArray = ["Find Mike", "Buy Eggs", "Destroy Demogorgon"]
+    var itemArray = ["Find Mike", "Buy Eggs", "Destroy Demogorgon"]
+    
+    let defaults = UserDefaults.standard
     
     
     
@@ -39,17 +41,45 @@ class ToDoListViewController: UITableViewController {
         }
         
         print(itemArray[indexPath.row])
-        
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+    //MARK - Add New Items
+    
+    @IBAction func addButtomPressed(_ sender: UIBarButtonItem) {
+        
+        var textField = UITextField()
+        
+        let alert = UIAlertController(title: "Add New ToDOey Item", message: "Alert Message", preferredStyle: .alert)
+        let action = UIAlertAction(title: "Add Item", style: .default) { (myAction) in
+            //what will happen once the user clicks the add Item button on our UIAlert
+            
+            self.itemArray.append(textField.text!)                      //add item to Array
+            self.defaults.set(self.itemArray, forKey: "ToDoListArray")  //put Array to useer defaults
+            
+            print(self.itemArray)
+            self.tableView.reloadData()
+        }
+        
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Create New Item..."
+            textField = alertTextField
+        }
+        
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
+        
+    }
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.separatorStyle = .singleLine
-
+        
+        if let items = defaults.array(forKey: "ToDoListArray") as? [String] {      //retrive user defaults to Array on startup
+            itemArray = items
+        }
         // Do any additional setup after loading the view, typically from a nib.
     }
 
