@@ -119,7 +119,8 @@ class ToDoListViewController: UITableViewController {
             itemArray = try appContext.fetch(request)
         } catch {
                 print("Error during fetching item to array, \(error)")
-            }
+        }
+        
         tableView.reloadData()
     }
 
